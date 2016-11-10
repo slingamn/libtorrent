@@ -153,7 +153,9 @@ namespace torrent {
         if (family == AF_INET6 || family == AF_UNSPEC) {
             query->a6_query = ::dns_submit_a6(m_ctx, name, 0, a6_callback_wrapper, query);
             if (query->a6_query == NULL) {
-                if (::dns_status(m_ctx) == DNS_E_BADQUERY) {
+                // it should be impossible for dns_submit_a6 to fail if dns_submit_a4
+                // succeeded, but just in case, make it a hard failure:
+                if (::dns_status(m_ctx) == DNS_E_BADQUERY && query->a4_query == NULL) {
                     query->error = EAI_NONAME;
                     m_malformed_queries.push_back(query);
                     return query;
