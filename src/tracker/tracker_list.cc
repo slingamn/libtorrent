@@ -268,7 +268,9 @@ TrackerList::insert_url(unsigned int group, const std::string& url, bool extra_t
 
   if (std::strncmp("http://", url.c_str(), 7) == 0 ||
       std::strncmp("https://", url.c_str(), 8) == 0) {
-    worker = std::make_shared<TrackerHttp>(tracker_info, flags);
+    //worker = std::make_shared<TrackerHttp>(tracker_info, flags);
+    // skip HTTP trackers for performance and stability reasons
+    return;
 
   } else if (std::strncmp("udp://", url.c_str(), 6) == 0) {
     worker = std::make_shared<tracker::TrackerUdp>(tracker_info, flags);
